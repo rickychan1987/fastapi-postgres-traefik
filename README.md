@@ -1,5 +1,5 @@
 # fastapi-postgres-traefik
-First go to app/main.py to adjust your email account in.
+First go to app/main.py to adjust your email account in.</br>
 $docker-compose down -v   #to ensure empty containers are running background
 $docker-compose -f docker-compose.prod.yml down -v    #to ensure empty containers are running background
 
