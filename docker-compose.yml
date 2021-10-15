@@ -6,12 +6,16 @@ services:
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0'
     volumes:
       - .:/app
-    ports:
-      - 8008:8000
+    expose:
+      - 8000
     environment:
       - DATABASE_URL=postgresql://root:admin@db:5432/root
     depends_on:
       - db
+    labels:
+      - "traaefik.enable=true"
+      - "traefik.http.router.fastapi.rule=Host(`fastapi.localhost`)"
+
   db:
     image: postgres:13-alpine
     volumes:
@@ -22,6 +26,15 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=root
+
+  traefik:
+    image: traefik:v2.2
+    ports:
+      - 8008:80
+      - 8081:8080
+    volumes:
+      - "./traefik.dev.toml:/etc/traefik/traefik.toml"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
 volumes:
   postgres_data:
